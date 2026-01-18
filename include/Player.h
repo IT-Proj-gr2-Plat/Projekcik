@@ -19,6 +19,7 @@ public:
     float invuln = 1.5f;      // seconds of invulnerability after taking damage
     float invulnTimer = 0.0f; // timer for invulnerability
     bool facingLeft = false;
+    float projectileCooldown = 0.0f;
 
     void update(double dt, const Uint8* kb);
     void render(SDL_Renderer* r, int camX, int camY, float renderScale = 1.0f);

@@ -4,11 +4,13 @@
 #include <algorithm>
 
 void Player::update(double dt, const Uint8* kb){
-    const float speed = 220.f;
+    const float speed = 420.f;
     float vx = 0.f;
     bool moving = false;
     if(kb[SDL_SCANCODE_LEFT]){ vx -= speed * (float)dt; moving = true; }
     if(kb[SDL_SCANCODE_RIGHT]){ vx += speed * (float)dt; moving = true; }
+    if(kb[SDL_SCANCODE_A]){ vx -= speed * (float)dt; moving = true; }
+    if(kb[SDL_SCANCODE_D]){ vx += speed * (float)dt; moving = true; }
     this->vx = vx;
     x += vx;
     if(kb[SDL_SCANCODE_SPACE] && onGround){ vy = -450.f; onGround = false; }
@@ -23,6 +25,11 @@ void Player::update(double dt, const Uint8* kb){
     if(invulnTimer > 0.0f){
         invulnTimer -= (float)dt;
         if(invulnTimer < 0.0f) invulnTimer = 0.0f;
+    }
+
+    if (projectileCooldown > 0.0f) {
+        projectileCooldown -= (float)dt;
+        if (projectileCooldown < 0.0f) projectileCooldown = 0.0f;
     }
 
     // Advance animation only when we have frames

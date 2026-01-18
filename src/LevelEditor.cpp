@@ -32,6 +32,9 @@ void LevelEditor::handleMouse(float mx, float my, float camX_editor_f){
     } else if (level->grid[row][col] == 8) {
         level->grid[row][col] = 9;
     } else if (level->grid[row][col] == 9) {
+        level->grid[row][col] = 10;
+    }
+    else if (level->grid[row][col] == 10) {
         level->grid[row][col] = 0;
     } else {
         level->grid[row][col] = (current + 1) % 6;
