@@ -246,6 +246,20 @@ static void resolveEnemyCollisions(Enemy& enemy, Level& level, int cellW, int ce
             }
         }
     }
+
+    // Prevent falling off edges
+    if (enemy.onGround && fabs(enemy.vx) > 0.1f) {
+        int dir = enemy.vx > 0 ? 1 : -1;
+        int checkC = dir > 0 ? (int)std::floor((enemy.x + enemy.width) / cellW) : (int)std::floor(enemy.x / cellW);
+        int checkR = (int)std::floor((enemy.y + 1) / cellH);
+        if (checkC >= 0 && checkC < level.cols && checkR >= 0 && checkR < level.rows) {
+            if (level.grid[checkR][checkC] != 1) {
+                enemy.vx = -enemy.vx;
+                if (enemy.vx < 0) enemy.facingLeft = false;
+                else enemy.facingLeft = true;
+            }
+        }
+    }
 }
 
 struct Boss {
@@ -1172,9 +1186,13 @@ int main(int argc, char* argv[]) {
                     if (player.x > maxPlayerX) player.x = maxPlayerX;
                 }
                 if (levelH_now > 0) {
-                    if (player.y < 0.f) player.y = 0.f;
-                    float maxPlayerY = (float)std::max(0, levelH_now - player.height);
-                    if (player.y > maxPlayerY) { player.y = maxPlayerY; player.onGround = true; player.vy = 0.f; }
+                    if (player.y > levelH_now - player.height) {
+                        player.health = 0;
+                    } else {
+                        if (player.y < 0.f) player.y = 0.f;
+                        float maxPlayerY = (float)std::max(0, levelH_now - player.height);
+                        if (player.y > maxPlayerY) { player.y = maxPlayerY; player.onGround = true; player.vy = 0.f; }
+                    }
                 }
 
                 // Camera: center on player in physics units, clamp to level bounds
