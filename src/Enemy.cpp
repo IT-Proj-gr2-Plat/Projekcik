@@ -4,6 +4,21 @@
 #include <algorithm>
 
 void Enemy::update(double dt, int levelWidth) {
+    if (isDead) {
+        // Only animate death, no movement
+        if (!frames.empty()) {
+            frameTime += dt * 1000.0;
+            if (frameTime >= frameDelay) {
+                curFrame++;
+                frameTime = 0;
+                if (curFrame >= static_cast<int>(frames.size())) {
+                    active = false; // Death animation finished
+                }
+            }
+        }
+        return;
+    }
+
     // Move horizontally
     x += vx * (float)dt;
 

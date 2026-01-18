@@ -16,6 +16,7 @@ public:
     double frameDelay = 200.0; // ms per frame
     int width = 32, height = 32;
     bool active = true;
+    bool isDead = false;
 
     void update(double dt, int levelWidth);
     void render(SDL_Renderer* r, int camX, int camY, float renderScale = 1.0f);

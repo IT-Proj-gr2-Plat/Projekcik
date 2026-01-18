@@ -47,7 +47,7 @@ public:
     void ensureCell(int r, int c);
 
     // Persist level
-    bool saveToZip(const std::string& path) const;
+    bool saveToZip(const std::string& path, const std::string& assetsDir) const;
     bool loadFromFile(const std::string& path);
 
 private:

@@ -3,6 +3,7 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include <iostream>
+#include <ctime>
 #include "Texture.h"
 #include "Player.h"
 #include "Level.h"
@@ -708,7 +709,7 @@ int main(int argc, char* argv[]) {
                     }
                 }
             }
-            level.saveToZip("level_" + std::to_string(selectedLevel) + ".zip");
+            level.saveToZip("level_" + std::to_string(selectedLevel) + ".zip", assetsDir);
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Menu", "Level saved", win);
         });
 
@@ -918,7 +919,7 @@ int main(int argc, char* argv[]) {
                         continue;
                     }
                     if (ev.key.keysym.scancode == SDL_SCANCODE_S && (SDL_GetModState() & KMOD_CTRL)) {
-                        level.saveToZip("level_saved.zip");
+                        level.saveToZip("level_saved.zip", assetsDir);
                         continue;
                     }
                     if (ev.key.keysym.scancode == SDL_SCANCODE_F11) {
@@ -1045,7 +1046,19 @@ int main(int argc, char* argv[]) {
                             // check with enemies
                             for (auto& e : enemies) {
                                 if (p.x < e.x + e.width && p.x + p.width > e.x && p.y < e.y && p.y + p.height > e.y - e.height) {
-                                    e.active = false;
+                                    e.isDead = true;
+                                    e.curFrame = 0;
+                                    e.frameTime = 0;
+                                    // Add blood particles
+                                    for (int i = 0; i < 5; ++i) {
+                                        Blood b;
+                                        b.x = e.x + (rand() % e.width);
+                                        b.y = e.y - e.height / 2.0f;
+                                        b.vx = (rand() % 200) - 100;
+                                        b.vy = -(rand() % 200);
+                                        b.lifetime = 60;
+                                        bloods.push_back(b);
+                                    }
                                     p.active = false;
                                     break;
                                 }
@@ -1073,6 +1086,15 @@ int main(int argc, char* argv[]) {
                 projectiles.erase(std::remove_if(projectiles.begin(), projectiles.end(), [](const Projectile& p){ return !p.active; }), projectiles.end());
                 // Remove inactive enemies
                 enemies.erase(std::remove_if(enemies.begin(), enemies.end(), [](const Enemy& e){ return !e.active; }), enemies.end());
+
+                // Update bloods
+                for (auto& b : bloods) {
+                    b.vy += 1200.f * dt;
+                    b.x += b.vx * dt;
+                    b.y += b.vy * dt;
+                    b.lifetime--;
+                }
+                bloods.erase(std::remove_if(bloods.begin(), bloods.end(), [](const Blood& b){ return b.lifetime <= 0; }), bloods.end());
 
                 // Use logical size for drawing / camera math
                 int winW = WINW;
@@ -1340,6 +1362,13 @@ int main(int argc, char* argv[]) {
                 // render enemies
                 for (auto& enemy : enemies) {
                     enemy.render(ren, camX_render, 0, renderScale);
+                }
+
+                // Render blood
+                for (auto& b : bloods) {
+                    SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
+                     SDL_Rect dst = { (int)(b.x - camX_render), (int)b.y, 8, 8 };
+                    SDL_RenderFillRect(ren, &dst);
                 }
 
                 // HUD/menu rendering
