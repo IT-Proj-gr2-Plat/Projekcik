@@ -1174,6 +1174,12 @@ int main(int argc, char* argv[]) {
                 // Halt music again if needed
                 Mix_HaltMusic();
 
+                // Save progress if level completed
+                if (playerWon) {
+                    saveData.completedLevels |= (1 << selectedLevel);
+                    saveProgress(saveData);
+                }
+
                 // Cleanup for this level
                 delete editor;
                 editor = nullptr;
