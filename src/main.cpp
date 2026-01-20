@@ -75,12 +75,14 @@ int main(int argc, char* argv[]) {
     // Load audio
     Mix_Music* menuMusic = Mix_LoadMUS((assetsDir + "menu_muzyka.mp3").c_str());
     Mix_Music* levelMusic = Mix_LoadMUS((assetsDir + "muzyczkaa_poziomy.mp3").c_str());
+    Mix_Music* bossMusic = Mix_LoadMUS((assetsDir + "boss_muzyka.mp3").c_str());
     Mix_Chunk* deadSound = Mix_LoadWAV((assetsDir + "deadzik.mp3").c_str());
     Mix_Chunk* pickSound = Mix_LoadWAV((assetsDir + "pick_up.mp3").c_str());
     Mix_Chunk* stepSound = Mix_LoadWAV((assetsDir + "step.mp3").c_str());
-
+    
     if (!menuMusic) SDL_Log("Failed to load menu music: %s", Mix_GetError());
     if (!levelMusic) SDL_Log("Failed to load level music: %s", Mix_GetError());
+    if (!bossMusic) SDL_Log("Failed to load boss music: %s", Mix_GetError());
     if (!deadSound) SDL_Log("Failed to load dead sound: %s", Mix_GetError());
     if (!pickSound) SDL_Log("Failed to load pick sound: %s", Mix_GetError());
     if (!stepSound) SDL_Log("Failed to load step sound: %s", Mix_GetError());
@@ -1189,6 +1191,7 @@ int main(int argc, char* argv[]) {
             if(hudFont) TTF_CloseFont(hudFont);
             Mix_FreeMusic(menuMusic);
             Mix_FreeMusic(levelMusic);
+            Mix_FreeMusic(bossMusic);
             Mix_FreeChunk(deadSound);
             Mix_FreeChunk(pickSound);
             Mix_FreeChunk(stepSound);
