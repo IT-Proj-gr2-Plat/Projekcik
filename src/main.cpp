@@ -122,8 +122,7 @@ int main(int argc, char* argv[]) {
         int selectedLevel = mainMenu.run();
         if (selectedLevel == -1) break; // kill
 
-        // Play level music (replaces menu music)
-        if (levelMusic) Mix_PlayMusic(levelMusic, -1);
+        
 
         std::string bgFile = "poziom_" + std::to_string(selectedLevel) + "_tlo.jpg";
         if (selectedLevel == 10) bgFile = "boss_tlo.png";
@@ -167,7 +166,11 @@ int main(int argc, char* argv[]) {
         }
 
         // Play level music
-        if (levelMusic) Mix_PlayMusic(levelMusic, -1);
+        if (selectedLevel == 10) {
+            if (bossMusic) Mix_PlayMusic(bossMusic, -1);
+        } else {
+            if (levelMusic) Mix_PlayMusic(levelMusic, -1);
+            }
 
         // Use logical WINW/WINH for level/frame sizing and rendering math
         Level level;
